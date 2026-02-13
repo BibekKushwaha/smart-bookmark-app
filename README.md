@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Smart Bookmark App
 
-## Getting Started
+Next.js App Router app with Supabase Auth (Google OAuth), Postgres, and Realtime.
 
-First, run the development server:
+## Features Implemented
+
+- Google OAuth only login/signup
+- Private bookmarks per user (`user_id` + RLS)
+- Add bookmark (`title` + `url`)
+- Delete own bookmarks
+- Realtime updates across open tabs
+
+## Tech Stack
+
+- Next.js (App Router)
+- Tailwind CSS
+- Supabase (`@supabase/supabase-js`, `@supabase/ssr`)
+
+
+
+## 1) Run Locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 2) Assignment Checklist Mapping
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Google-only auth: `components/google-sign-in-button.tsx`, `app/auth/callback/route.ts`
+2. Add bookmark: `components/bookmark-dashboard.tsx`, `app/api/bookmarks/route.ts`
+3. Private per user: RLS policies in `supabase/schema.sql` + server checks
+4. Realtime updates: Supabase Realtime subscription in `components/bookmark-dashboard.tsx`
+5. Delete own bookmark: `app/api/bookmarks/[id]/route.ts`
+6. Vercel deploy-ready: Next.js app + env setup 
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Problems Faced And How They Were Solved
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. OAuth redirect opened a dead Supabase domain (`DNS_PROBE_FINISHED_NXDOMAIN`).
+- Cause: typo in `NEXT_PUBLIC_SUPABASE_URL` project ref.
+- Fix: used the exact Supabase Project URL from dashboard and added strict URL validation in `lib/supabase/env.ts`.
 
-## Deploy on Vercel
+2. Realtime update between two tabs was sometimes inconsistent.
+- Cause: relying only on websocket realtime can fail in some local/dev browser conditions.
+- Fix: kept Supabase Realtime subscription and added cross-tab fallback with `BroadcastChannel` + `storage` event in `components/bookmark-dashboard.tsx`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. Build issues with Turbopack in restricted local environment.
+- Cause: local environment restrictions while running Turbopack workers.
+- Fix: switched build script to webpack mode (`next build --webpack`) for stable CI/deployment behavior.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Submission Info
+
+- Live Vercel URL: `ADD_YOUR_VERCEL_URL_HERE`
+- Public GitHub repo: `ADD_YOUR_GITHUB_REPO_URL_HERE`
