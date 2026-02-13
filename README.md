@@ -54,5 +54,5 @@ Open `http://localhost:3000`.
 
 ## Submission Info
 
-- Live Vercel URL: `ADD_YOUR_VERCEL_URL_HERE`
-- Public GitHub repo: `ADD_YOUR_GITHUB_REPO_URL_HERE`
+- Live Vercel URL: `https://smart-bookmark-app-sigma-gules.vercel.app`
+- Public GitHub repo: `https://github.com/BibekKushwaha/smart-bookmark-app`
